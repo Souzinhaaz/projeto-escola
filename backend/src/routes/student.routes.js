@@ -1,6 +1,9 @@
-const router = require("express").Router();
-const studentController = require("../controllers/student.controller")
+import Router from "express";
+import { createStudent } from "../controllers/student.controller.js";
+import { validStudent } from "../middlewares/global.middleware.js";
 
-router.get("/", studentController.createStudent);
+const router = Router();
 
-module.exports = router;
+router.post("/", validStudent, createStudent);
+
+export default router;

@@ -1,6 +1,10 @@
-const mongoose = require("mongoose")
+import mongoose from "mongoose"
 
 const ReportCardSchema = new mongoose.Schema({
+  student: {
+    type: mongoose.Types.ObjectId,
+    required: true
+  },
   grades: {
     type: Array,
     required: true
@@ -9,12 +13,12 @@ const ReportCardSchema = new mongoose.Schema({
     type: Number,
     required: true
   },
-  situation: {
+  approved: {
     type: Boolean,
     required: true
-  }
+  },
 })
 
 const ReportCard = mongoose.model("reportCard", ReportCardSchema);
 
-module.exports = ReportCard;
+export default ReportCard;

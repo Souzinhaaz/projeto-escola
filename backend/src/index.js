@@ -1,9 +1,9 @@
-const express = require("express");
-const connectDB = require("./database/db");
+import express from "express"
+import connectDB from "./database/db.js";
 
-const classRoutes = require("./routes/class.routes");
-const studentRoutes = require("./routes/student.routes");
-// const reportCardRoutes = require("./routes/reportCard.routes");
+import classRoutes from "./routes/class.routes.js";
+import studentRoutes from "./routes/student.routes.js";
+import reportCardRoutes from "./routes/reportCard.routes.js";
 
 const app = express();
 
@@ -12,8 +12,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 app.use("/class", classRoutes);
-app.use("/students", studentRoutes);
-// app.use("/reportcard", reportCardRoutes);
+app.use("/student", studentRoutes);
+app.use("/reportcard", reportCardRoutes);
 
 const PORT = 3000;
 app.listen(PORT, () => console.log(`Server is running on port ${PORT}`));

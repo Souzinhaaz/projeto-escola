@@ -1,7 +1,11 @@
-const Class = require("../models/Class");
-const classService = require("../services/class.service");
+import {
+  createClassService,
+  findClassesService,
+  updateClassService,
+  deleteClassService,
+} from "../services/class.service.js";
 
-const createClass = async (req, res) => {
+export const createClass = async (req, res) => {
   try {
     const { name, shift, year } = req.body;
 
@@ -21,7 +25,7 @@ const createClass = async (req, res) => {
       });
     }
 
-    const schoolClass = await classService.createClassService(req.body);
+    const schoolClass = await createClassService(req.body);
 
     if (!schoolClass) {
       res
@@ -35,11 +39,11 @@ const createClass = async (req, res) => {
   }
 };
 
-const findClasses = async (req, res) => {
+export const findClasses = async (req, res) => {
   try {
-    const schoolClasses = await classService.findClassesService();
+    const schoolClasses = await findClassesService();
 
-    if (!schoolClasses) {
+    if (schoolClasses.length === 0) {
       res.status(404).send({ message: "There are no classes registered" });
     }
 
@@ -49,17 +53,17 @@ const findClasses = async (req, res) => {
   }
 };
 
-const findClass = (req, res) => {
+export const findClass = (req, res) => {
   try {
-    const user = req.user;
+    const schoolClass = req.schoolClass;
 
-    res.send(user);
+    res.send(schoolClass);
   } catch (err) {
     res.status(500).send({ message: "Occured an error in the server!" });
   }
 };
 
-const updateClass = async (req, res) => {
+export const updateClass = async (req, res) => {
   try {
     const { name, shift, year } = req.body;
     const id = req.id;
@@ -80,7 +84,7 @@ const updateClass = async (req, res) => {
       });
     }
 
-    await classService.updateClassService(id, name, shift, year);
+    await updateClassService(id, name, shift, year);
 
     res.status(200).send({ message: "Class updated succesfully" });
   } catch (err) {
@@ -88,22 +92,14 @@ const updateClass = async (req, res) => {
   }
 };
 
-const deleteClass = async (req, res) => {
+export const deleteClass = async (req, res) => {
   try {
     const id = req.id;
 
-    await classService.deleteClassService(id);
+    await deleteClassService(id);
 
     res.status(200).send({ message: "Class deleted successfully" });
   } catch (err) {
     res.status(500).send({ message: "Occured a internal error" });
   }
-};
-
-module.exports = {
-  createClass,
-  findClasses,
-  findClass,
-  updateClass,
-  deleteClass,
 };

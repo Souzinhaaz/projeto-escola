@@ -1,8 +1,9 @@
-const Student = require("../models/Student");
+import Student from "../models/Student.js";
 
-const createStudentService = (body) => Student.create(body);
+export const createStudentService = (body) => Student.create(body);
 
+export const findStudentsService = () => Student.find();
 
-module.exports = {
-  createStudentService
-}
+export const findStudentByIdService = (id) => Student.findById(id);
+
+export const deleteStudentService = (id) => Student.findByIdAndDelete(id);
