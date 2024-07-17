@@ -4,15 +4,17 @@ import {
   findReportCards,
   findReportCard,
   updateReportCard,
+  deleteReportCard
 } from "../controllers/reportCard.controller.js";
-import { validReportCard } from "../middlewares/report.middleware.js";
+import { validCreateReportCard, validReportCard } from "../middlewares/report.middleware.js";
 import { validId } from "../middlewares/global.middleware.js";
 
 const router = Router();
 
-router.post("/", validReportCard, createReportCard);
+router.post("/", validCreateReportCard, createReportCard);
 router.get("/", findReportCards);
-router.get("/:id", validId, findReportCard);
-router.patch("/:id", validId, updateReportCard);
+router.get("/:id", validId, validReportCard, findReportCard);
+router.patch("/:id", validId, validReportCard, updateReportCard);
+router.delete("/:id", validId, validReportCard, deleteReportCard)
 
 export default router;

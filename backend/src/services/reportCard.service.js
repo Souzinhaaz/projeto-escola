@@ -12,4 +12,4 @@ export const findByIdCardService = (id) => ReportCard.findById(id).populate("stu
 export const updateReportCardService = (id, grades, faults, approved) =>
   ReportCard.findOneAndUpdate({ _id: id }, { grades, faults, approved });
 
-export const deleteCardService = (id) => ReportCard.findByIdAndDelete(id);
+export const deleteCardService = (id) => ReportCard.findOneAndDelete({_id: id});

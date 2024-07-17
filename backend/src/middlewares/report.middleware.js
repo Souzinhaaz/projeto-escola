@@ -1,8 +1,8 @@
 import mongoose from "mongoose";
-import { findStudentByReportCard } from "../services/reportCard.service.js";
+import { findByIdCardService, findStudentByReportCard } from "../services/reportCard.service.js";
 import { findStudentByIdService } from "../services/student.service.js";
 
-export const validReportCard = async (req, res, next) => {
+export const validCreateReportCard = async (req, res, next) => {
   try {
     const { studentId, grades, faults } = req.body;
 
@@ -43,3 +43,21 @@ export const validReportCard = async (req, res, next) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+export const validReportCard = async (req, res, next) => {
+  try {
+    const id = req.id;
+
+    const reportCard = await findByIdCardService(id);
+
+    if (!reportCard) {
+      return res.status(404).send({message: "Report Card does not exist!"})
+    }
+
+    req.reportCard = reportCard;
+    req.id = id;
+    next();
+  } catch (err) {
+    res.status(500).send({message: err.message})
+  }
+}

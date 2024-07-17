@@ -1,6 +1,6 @@
 import {
   createReportCardService,
-  findByIdCardService,
+  deleteCardService,
   findCardsService,
   updateReportCardService,
 } from "../services/reportCard.service.js";
@@ -51,13 +51,7 @@ export const findReportCards = async (req, res) => {
 
 export const findReportCard = async (req, res) => {
   try {
-    const id = req.id;
-
-    const reportCard = await findByIdCardService(id);
-
-    if (!reportCard) {
-      res.status(404).send({ message: "Card not found" });
-    }
+    const reportCard = req.reportCard;
 
     res.status(200).send(reportCard);
   } catch (err) {
@@ -69,6 +63,10 @@ export const updateReportCard = async (req, res) => {
   try {
     const { grades, faults } = req.body;
     const id = req.id;
+
+    if (faults < 0) {
+      return res.status(400).send({ message: "Invalid value to faults" });
+    }
 
     if (!grades && !faults) {
       return res
@@ -82,12 +80,24 @@ export const updateReportCard = async (req, res) => {
         .send({ message: "Must be passed 4 notes in the grades" });
     }
 
-    const approved = getSituation(grades);
+    const approved = getSituation(grades, faults);
 
-    await updateReportCardService(id, grades, faults, approved)
+    await updateReportCardService(id, grades, faults, approved);
 
     res.status(200).send({ message: "Report card succesfully updated" });
   } catch (err) {
     res.status(500).send({ message: err.msg });
+  }
+};
+
+export const deleteReportCard = async (req, res) => {
+  try {
+    const id = req.id;
+
+    await deleteCardService(id);
+
+    res.status(200).send({ message: "Report Card deleted successfully!" });
+  } catch (err) {
+    res.status(500).send({ message: err.message });
   }
 };
