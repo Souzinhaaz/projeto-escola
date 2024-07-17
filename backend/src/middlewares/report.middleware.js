@@ -1,18 +1,25 @@
 import mongoose from "mongoose";
 import { findStudentByReportCard } from "../services/reportCard.service.js";
+import { findStudentByIdService } from "../services/student.service.js";
 
 export const validReportCard = async (req, res, next) => {
   try {
     const { studentId, grades, faults } = req.body;
 
-    if (!studentId) {
+    if (!studentId || !grades || !faults) {
       return res
         .status(400)
-        .send({ message: "Need to refer a student to create a report card." });
+        .send({ message: "Submit all fields for registration!" });
     }
 
     if (!mongoose.Types.ObjectId.isValid(studentId)) {
       return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    if (grades.length !== 4) {
+      return res
+        .status(400)
+        .send({ message: "Must be passed 4 notes in the grades" });
     }
 
     const student = await findStudentByIdService(studentId);
@@ -23,8 +30,10 @@ export const validReportCard = async (req, res, next) => {
 
     const reportCard = await findStudentByReportCard(student._id);
 
-    if (reportCard.length > 0) {
-      return res.status(400).send({message: "Student already have a Report Card"});
+    if (reportCard) {
+      return res
+        .status(400)
+        .send({ message: "Student already have a Report Card" });
     }
 
     req.reportCard = { studentId, grades, faults };

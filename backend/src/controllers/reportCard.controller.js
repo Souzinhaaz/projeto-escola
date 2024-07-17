@@ -10,18 +10,6 @@ export const createReportCard = async (req, res) => {
   try {
     const { studentId, grades, faults } = req.reportCard;
 
-    if (!grades || !faults) {
-      return res
-        .status(400)
-        .send({ message: "Submit all fields for registration!" });
-    }
-
-    if (grades.length !== 4) {
-      return res
-        .status(400)
-        .send({ message: "Must be passed 4 notes in the grades" });
-    }
-
     const approved = getSituation(grades);
 
     const reportData = {
@@ -79,8 +67,8 @@ export const findReportCard = async (req, res) => {
 
 export const updateReportCard = async (req, res) => {
   try {
-    const id = req.id;
     const { grades, faults } = req.body;
+    const id = req.id;
 
     if (!grades && !faults) {
       return res
@@ -96,7 +84,7 @@ export const updateReportCard = async (req, res) => {
 
     const approved = getSituation(grades);
 
-    await updateReportCardService(id, grades, faults, approved);
+    await updateReportCardService(id, grades, faults, approved)
 
     res.status(200).send({ message: "Report card succesfully updated" });
   } catch (err) {
