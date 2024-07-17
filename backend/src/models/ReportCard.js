@@ -3,6 +3,7 @@ import mongoose from "mongoose"
 const ReportCardSchema = new mongoose.Schema({
   student: {
     type: mongoose.Types.ObjectId,
+    ref: "Student",
     required: true
   },
   grades: {
@@ -19,6 +20,6 @@ const ReportCardSchema = new mongoose.Schema({
   },
 })
 
-const ReportCard = mongoose.model("reportCard", ReportCardSchema);
+const ReportCard = mongoose.model("ReportCard", ReportCardSchema);
 
 export default ReportCard;
