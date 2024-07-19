@@ -1,5 +1,5 @@
 import mongoose from "mongoose";
-import { findClassService } from "../services/class.service.js";
+import { findClassByIdService } from "../services/class.service.js";
 
 export const validClass = async (req, res, next) => {
   try {
@@ -9,7 +9,7 @@ export const validClass = async (req, res, next) => {
       return res.status(400).send({message: "Invalid ID"})
     }
 
-    const schoolClass = await findClassService(id);
+    const schoolClass = await findClassByIdService(id);
 
     if (!schoolClass) {
       return res.status(404).send({ message: "Class does not exist!" });

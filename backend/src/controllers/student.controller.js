@@ -4,6 +4,7 @@ import {
   findStudentByIdService,
   findStudentsService,
 } from "../services/student.service.js";
+import mongoose from "mongoose";
 
 export const createStudent = async (req, res) => {
   try {
@@ -54,6 +55,18 @@ export const findStudentById = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+export const updateStudent = async (req, res) => {
+  try {
+    const { schoolClass, name, email, parentTelephone } = req.student;
+    const id = req.id;
+
+
+
+  } catch (err) {
+    res.status(500).send({message: err.message})
+  }
+}
 
 export const deleteStudentById = async (req, res) => {
   try {

@@ -1,6 +1,7 @@
 import {
   createClassService,
   findClassesService,
+  findByQuery,
   updateClassService,
   deleteClassService,
 } from "../services/class.service.js";
@@ -53,13 +54,39 @@ export const findClasses = async (req, res) => {
   }
 };
 
-export const findClass = (req, res) => {
+export const findClassById = (req, res) => {
   try {
     const schoolClass = req.schoolClass;
 
     res.send(schoolClass);
   } catch (err) {
     res.status(500).send({ message: "Occured an error in the server!" });
+  }
+};
+
+export const searchClass = async (req, res) => {
+  try {
+    const { name, shift, year } = req.query;
+
+    const createFilter = ({ name, shift, year }) => {
+      let filter = {};
+      if (name) filter.name = { $regex: name, $options: 'i' };
+      if (shift) filter.shift = { $regex: shift, $options: 'i' };
+      if (year) filter.year = year;
+      return filter;
+    };
+
+    const filter =  createFilter({ name, shift, year });
+
+    const classes = await findByQuery(filter);
+
+    if (classes.length === 0) {
+      return res.status(404).send({message: "Class not found"});
+    }
+
+    res.status(200).send(classes);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
   }
 };
 

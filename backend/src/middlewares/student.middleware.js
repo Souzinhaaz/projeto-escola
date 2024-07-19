@@ -1,6 +1,6 @@
 import mongoose from "mongoose";
 import { findStudentByIdService } from "../services/student.service.js";
-import { findClassService } from "../services/class.service.js";
+import { findClassByIdService } from "../services/class.service.js";
 
 export const validStudent = async (req, res, next) => {
   try {
@@ -39,7 +39,7 @@ export const validClassStudent = async (req, res, next) => {
       return res.status(400).send({ message: "Invalid ID" });
     }
 
-    const schoolClass = await findClassService(classId);
+    const schoolClass = await findClassByIdService(classId);
 
     if (!schoolClass) {
       return res.status(404).send({ message: "Class does no exist!" });
@@ -51,3 +51,30 @@ export const validClassStudent = async (req, res, next) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+export const validUpdateStudent = async (req, res, next) => {
+  try {
+    const { classId, name, email, parentTelephone } = req.body;
+
+    if (!classId && !name && !email && !parentTelephone) {
+      return res
+        .status(400)
+        .send({ message: "Submit all fields for registration!" });
+    }
+
+    if (!mongoose.Types.ObjectId.isValid(classId)) {
+      return res.status(400).send({ message: "Invalid ID" });
+    }
+
+    const schoolClass = await findClassByIdService(classId);
+
+    if (!schoolClass) {
+      return res.status(404).send({ message: "Class does no exist!" });
+    }
+
+    req.student = { classId, name, email, parentTelephone };
+    next();
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+}
