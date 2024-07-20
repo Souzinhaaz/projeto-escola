@@ -6,7 +6,7 @@ export const findClassesService = () => Class.find();
 
 export const findClassByIdService = (id) => Class.findById(id);
 
-export const findByQuery = (filter) => Class.find(filter)
+export const findClassByQuery = (filter) => Class.find(filter)
 
 export const updateClassService = (id, name, shift, year) =>
   Class.findOneAndUpdate({ _id: id }, { name, shift, year });

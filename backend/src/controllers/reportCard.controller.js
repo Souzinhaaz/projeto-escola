@@ -2,6 +2,7 @@ import {
   createReportCardService,
   deleteCardService,
   findCardsService,
+  findCardsByQuery,
   updateReportCardService,
 } from "../services/reportCard.service.js";
 import { getSituation } from "../utils/getSituation.js";
@@ -13,7 +14,7 @@ export const createReportCard = async (req, res) => {
     const approved = getSituation(grades);
 
     const reportData = {
-      studentId,
+      student: studentId,
       grades,
       faults,
       approved,
@@ -48,6 +49,28 @@ export const findReportCards = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+export const searchReport = async (req, res) => {
+  try {
+    const { studentId, name } = req.query;
+
+    const createFilter = ({ studentId, name }) => {
+      let filter = {};
+      if (studentId) filter._id = studentId;
+      if (name) filter.name = name;
+      return filter;
+    };
+    
+    const filter = createFilter({ studentId, name })
+    console.log(filter);
+    
+    const reportCards = await findCardsByQuery(filter);
+
+    res.status(200).send(reportCards);
+  } catch (err) {
+    res.status(500).send({message: err.message})
+  }
+}
 
 export const findReportCard = async (req, res) => {
   try {

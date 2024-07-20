@@ -2,9 +2,9 @@ import {
   createStudentService,
   deleteStudentService,
   findStudentByIdService,
+  findStudentByQuery,
   findStudentsService,
 } from "../services/student.service.js";
-import mongoose from "mongoose";
 
 export const createStudent = async (req, res) => {
   try {
@@ -39,6 +39,21 @@ export const findStudents = async (req, res) => {
     res.status(500).send({ message: err.message });
   }
 };
+
+export const searchStudent = async (req, res) => {
+  try {
+    const { name } = req.query;
+    
+    let filter = {};
+    if (name) filter.name = { $regex: `${name || ""}`, $options: 'i' };
+    
+    const students = await findStudentByQuery(filter);
+
+    res.status(200).send(students);
+  } catch (err) {
+    res.status(500).send({message: err.message})
+  }
+}
 
 export const findStudentById = async (req, res) => {
   try {

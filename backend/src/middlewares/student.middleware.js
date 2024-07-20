@@ -27,25 +27,25 @@ export const validStudent = async (req, res, next) => {
 
 export const validClassStudent = async (req, res, next) => {
   try {
-    const { classId, name, email, parentTelephone } = req.body;
+    const { schoolClass, name, email, parentTelephone } = req.body;
 
-    if (!classId || !name || !email || !parentTelephone) {
+    if (!schoolClass || !name || !email || !parentTelephone) {
       return res
         .status(400)
         .send({ message: "Submit all fields for registration!" });
     }
 
-    if (!mongoose.Types.ObjectId.isValid(classId)) {
+    if (!mongoose.Types.ObjectId.isValid(schoolClass)) {
       return res.status(400).send({ message: "Invalid ID" });
     }
 
-    const schoolClass = await findClassByIdService(classId);
+    const classSchool = await findClassByIdService(schoolClass);
 
-    if (!schoolClass) {
+    if (!classSchool) {
       return res.status(404).send({ message: "Class does no exist!" });
     }
 
-    req.student = { classId, name, email, parentTelephone };
+    req.student = { schoolClass, name, email, parentTelephone };
     next();
   } catch (err) {
     res.status(500).send({ message: err.message });
