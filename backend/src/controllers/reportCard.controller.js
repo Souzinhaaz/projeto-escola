@@ -2,10 +2,10 @@ import {
   createReportCardService,
   deleteCardService,
   findCardsService,
+  searchByStudentService,
   updateReportCardService,
-  findByIdCardService,
-  findOneCardServive,
 } from "../services/reportCard.service.js";
+import { findOneStudentByQuery } from "../services/student.service.js";
 import { getSituation } from "../utils/getSituation.js";
 
 export const createReportCard = async (req, res) => {
@@ -55,13 +55,15 @@ export const searchReport = async (req, res) => {
   try {
     const { name } = req.query;
 
-    const filter = { name: { $regex: name, $options: "i" } };
-    const student = await findOneCardServive(filter);
+    const filter = { name: { $regex: `${name || ""}`, $options: "i" } };
+
+    const student = await findOneStudentByQuery(filter);
+
     if (!student) {
-      return res.status(404).send({ message: "Student not found" });
+      return res.status(404).send({message: "User not found!"})
     }
 
-    const reportCards = await findByIdCardService(student._id);
+    const reportCards = await searchByStudentService(student._id);
 
     res.status(200).send(reportCards);
   } catch (err) {
