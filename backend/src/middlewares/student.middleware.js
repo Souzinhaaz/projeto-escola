@@ -27,9 +27,9 @@ export const validStudent = async (req, res, next) => {
 
 export const validClassStudent = async (req, res, next) => {
   try {
-    const { schoolClass, name, email, parentTelephone } = req.body;
+    const { name, email, parentTelephone, schoolClass } = req.body;
 
-    if (!schoolClass || !name || !email || !parentTelephone) {
+    if ( !name || !email || !parentTelephone || !schoolClass) {
       return res
         .status(400)
         .send({ message: "Submit all fields for registration!" });
@@ -45,7 +45,7 @@ export const validClassStudent = async (req, res, next) => {
       return res.status(404).send({ message: "Class does no exist!" });
     }
 
-    req.student = { schoolClass, name, email, parentTelephone };
+    req.student = { name, email, parentTelephone, schoolClass };
     next();
   } catch (err) {
     res.status(500).send({ message: err.message });
@@ -54,9 +54,9 @@ export const validClassStudent = async (req, res, next) => {
 
 export const validUpdateStudent = async (req, res, next) => {
   try {
-    const { classId, name, email, parentTelephone } = req.body;
+    const { name, email, parentTelephone, classId } = req.body;
 
-    if (!classId && !name && !email && !parentTelephone) {
+    if ( !name && !email && !parentTelephone && !classId) {
       return res
         .status(400)
         .send({ message: "Submit all fields for registration!" });
@@ -72,7 +72,7 @@ export const validUpdateStudent = async (req, res, next) => {
       return res.status(404).send({ message: "Class does no exist!" });
     }
 
-    req.student = { classId, name, email, parentTelephone };
+    req.student = { name, email, parentTelephone, classId };
     next();
   } catch (err) {
     res.status(500).send({ message: err.message });

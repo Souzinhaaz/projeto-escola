@@ -2,8 +2,9 @@ import {
   createReportCardService,
   deleteCardService,
   findCardsService,
-  findCardsByQuery,
   updateReportCardService,
+  findByIdCardService,
+  findOneCardServive,
 } from "../services/reportCard.service.js";
 import { getSituation } from "../utils/getSituation.js";
 
@@ -52,25 +53,21 @@ export const findReportCards = async (req, res) => {
 
 export const searchReport = async (req, res) => {
   try {
-    const { studentId, name } = req.query;
+    const { name } = req.query;
 
-    const createFilter = ({ studentId, name }) => {
-      let filter = {};
-      if (studentId) filter._id = studentId;
-      if (name) filter.name = name;
-      return filter;
-    };
-    
-    const filter = createFilter({ studentId, name })
-    console.log(filter);
-    
-    const reportCards = await findCardsByQuery(filter);
+    const filter = { name: { $regex: name, $options: "i" } };
+    const student = await findOneCardServive(filter);
+    if (!student) {
+      return res.status(404).send({ message: "Student not found" });
+    }
+
+    const reportCards = await findByIdCardService(student._id);
 
     res.status(200).send(reportCards);
   } catch (err) {
-    res.status(500).send({message: err.message})
+    res.status(500).send({ message: err.message });
   }
-}
+};
 
 export const findReportCard = async (req, res) => {
   try {
