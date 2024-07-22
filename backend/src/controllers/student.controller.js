@@ -4,6 +4,7 @@ import {
   findStudentByIdService,
   findStudentByQuery,
   findStudentsService,
+  updateStudentService,
 } from "../services/student.service.js";
 
 export const createStudent = async (req, res) => {
@@ -42,18 +43,15 @@ export const findStudents = async (req, res) => {
 
 export const searchStudent = async (req, res) => {
   try {
-    const { name } = req.query;
-    
-    let filter = {};
-    if (name) filter.name = { $regex: `${name || ""}`, $options: 'i' };
-    
+    const filter = req.filter;
+
     const students = await findStudentByQuery(filter);
 
     res.status(200).send(students);
   } catch (err) {
-    res.status(500).send({message: err.message})
+    res.status(500).send({ message: err.message });
   }
-}
+};
 
 export const findStudentById = async (req, res) => {
   try {
@@ -73,15 +71,17 @@ export const findStudentById = async (req, res) => {
 
 export const updateStudent = async (req, res) => {
   try {
-    const { schoolClass, name, email, parentTelephone } = req.student;
+    const { name, email, parentTelephone, schoolClass } = req.body;
     const id = req.id;
 
+    console.log("Passou do middleware!");
+    await updateStudentService(id, name, email, parentTelephone, schoolClass);
 
-
+    res.status(200).send({ message: "Student updated successfully" });
   } catch (err) {
-    res.status(500).send({message: err.message})
+    res.status(500).send({ message: err.message });
   }
-}
+};
 
 export const deleteStudentById = async (req, res) => {
   try {
@@ -89,8 +89,8 @@ export const deleteStudentById = async (req, res) => {
 
     await deleteStudentService(id);
 
-    res.status(200).send({message: "Student deleted successfully!"})
+    res.status(200).send({ message: "Student deleted successfully!" });
   } catch (err) {
-    res.status(500).send({message: err.message})
+    res.status(500).send({ message: err.message });
   }
-}
+};

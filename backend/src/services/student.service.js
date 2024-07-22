@@ -13,14 +13,14 @@ export const findStudentByIdService = (id) =>
 
 export const updateStudentService = (
   id,
-  schoolClass,
   name,
   email,
-  parentTelephone
+  parentTelephone,
+  schoolClass
 ) =>
   Student.findOneAndUpdate(
     { _id: id },
-    { schoolClass, name, email, parentTelephone }
+    { name, email, parentTelephone, schoolClass }
   );
 
 export const deleteStudentService = (id) => Student.findByIdAndDelete(id);

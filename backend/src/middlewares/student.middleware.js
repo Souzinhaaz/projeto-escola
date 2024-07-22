@@ -29,7 +29,7 @@ export const validClassStudent = async (req, res, next) => {
   try {
     const { name, email, parentTelephone, schoolClass } = req.body;
 
-    if ( !name || !email || !parentTelephone || !schoolClass) {
+    if (!name || !email || !parentTelephone || !schoolClass) {
       return res
         .status(400)
         .send({ message: "Submit all fields for registration!" });
@@ -52,29 +52,46 @@ export const validClassStudent = async (req, res, next) => {
   }
 };
 
-export const validUpdateStudent = async (req, res, next) => {
+export const validSearch = async (req, res, next) => {
   try {
-    const { name, email, parentTelephone, classId } = req.body;
+    const { classId, name } = req.query;
 
-    if ( !name && !email && !parentTelephone && !classId) {
-      return res
-        .status(400)
-        .send({ message: "Submit all fields for registration!" });
+    let filter = {};
+    if (name) filter.name = { $regex: `${name || ""}`, $options: "i" };
+    if (classId && mongoose.Types.ObjectId.isValid(classId)) {
+      filter.schoolClass = classId;
     }
 
-    if (!mongoose.Types.ObjectId.isValid(classId)) {
-      return res.status(400).send({ message: "Invalid ID" });
-    }
-
-    const schoolClass = await findClassByIdService(classId);
-
-    if (!schoolClass) {
-      return res.status(404).send({ message: "Class does no exist!" });
-    }
-
-    req.student = { name, email, parentTelephone, classId };
+    req.filter = filter;
     next();
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
-}
+};
+
+export const validUpdateStudent = async (req, res, next) => {
+  try {
+    const { name, email, parentTelephone, classId } = req.body;
+
+    if (!name && !email && !parentTelephone && !classId) {
+      return res
+        .status(400)
+        .send({ message: "Submit at least one field for registration!" });
+    }
+
+    if (classId) {
+      if (!mongoose.Types.ObjectId.isValid(classId)) {
+        return res.status(400).send({ message: "Invalid ID" });
+      }
+
+      const schoolClass = await findClassByIdService(classId);
+      if (!schoolClass) {
+        return res.status(404).send({ message: "Class does no exist!" });
+      }
+    }
+
+    next();
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
