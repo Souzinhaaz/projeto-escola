@@ -45,7 +45,9 @@ export const findClasses = async (req, res) => {
     const schoolClasses = await findClassesService();
 
     if (schoolClasses.length === 0) {
-      return res.status(404).send({ message: "There are no classes registered" });
+      return res
+        .status(404)
+        .send({ message: "There are no classes registered" });
     }
 
     res.status(200).send(schoolClasses);
@@ -70,17 +72,33 @@ export const searchClass = async (req, res) => {
 
     const createFilter = ({ name, shift, year }) => {
       let filter = {};
-      if (name) filter.name = { $regex: `${name || ""}`, $options: 'i' };
-      if (shift) filter.shift = { $regex: `${shift || ""}`, $options: 'i' };
+      if (name) filter.name = { $regex: `${name || ""}`, $options: "i" };
+      if (shift) filter.shift = { $regex: `${shift || ""}`, $options: "i" };
       if (year) filter.year = year;
       return filter;
     };
 
-    const filter =  createFilter({ name, shift, year });
+    const filter = createFilter({ name, shift, year });
 
     const classes = await findClassByQuery(filter);
 
     res.status(200).send(classes);
+  } catch (err) {
+    res.status(500).send({ message: err.message });
+  }
+};
+
+export const searchStudentsAndCards = async (req, res) => {
+  try {
+    const classSchool = req.classSchool;
+    const student = req.student;
+    const reportCard = req.reportCard;
+
+    res.status(200).send({
+      class: classSchool,
+      student: student,
+      reportCard: reportCard
+    })
   } catch (err) {
     res.status(500).send({ message: err.message });
   }
