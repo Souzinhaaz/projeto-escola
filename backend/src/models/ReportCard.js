@@ -1,11 +1,6 @@
 import mongoose from "mongoose"
 
 const ReportCardSchema = new mongoose.Schema({
-  student: {
-    type: mongoose.Types.ObjectId,
-    ref: "Student",
-    required: true
-  },
   grades: {
     type: Array,
     required: true
@@ -18,6 +13,11 @@ const ReportCardSchema = new mongoose.Schema({
     type: Boolean,
     required: true
   },
+  student: {
+    type: mongoose.Types.ObjectId,
+    ref: "Student",
+    required: true
+  }
 })
 
 const ReportCard = mongoose.model("ReportCard", ReportCardSchema);

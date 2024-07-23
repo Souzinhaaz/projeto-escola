@@ -94,11 +94,25 @@ export const searchStudentsAndCards = async (req, res) => {
     const student = req.student;
     const reportCard = req.reportCard;
 
+    let sum = 0;
+    console.log(reportCard)
+    for (let i = 0; i < reportCard.grades.length; i++) {
+      sum += reportCard.grades[i];
+    }
+    const average = sum / reportCard.grades.length;
+
     res.status(200).send({
       class: classSchool,
       student: student,
-      reportCard: reportCard
-    })
+      reportCard: {
+        _id: reportCard._id,
+        student: student.name,
+        grades: reportCard.grades,
+        faults: reportCard.faults,
+        average: average,
+        approved: reportCard.approved
+      },
+    });
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

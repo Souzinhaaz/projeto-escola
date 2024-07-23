@@ -12,7 +12,7 @@ export const createReportCard = async (req, res) => {
   try {
     const { studentId, grades, faults } = req.reportCard;
 
-    const approved = getSituation(grades);
+    const approved = getSituation(grades, faults);
 
     const reportData = {
       student: studentId,
@@ -86,14 +86,14 @@ export const updateReportCard = async (req, res) => {
     const { grades, faults } = req.body;
     const id = req.id;
 
-    if (faults < 0) {
-      return res.status(400).send({ message: "Invalid value to faults" });
-    }
-
     if (!grades && !faults) {
       return res
         .status(400)
         .send({ message: "At least one field must be submit to update" });
+    }
+
+    if (faults < 0) {
+      return res.status(400).send({ message: "Invalid value to faults" });
     }
 
     if (grades.length !== 4) {

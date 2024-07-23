@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import {
   findClassByIdService
 } from "../services/class.service.js";
-import { findStudentByQuery } from "../services/student.service.js";
+import { findOneStudentByQuery } from "../services/student.service.js";
 import { searchByStudentService } from "../services/reportCard.service.js";
 
 export const validClass = async (req, res, next) => {
@@ -41,7 +41,7 @@ export const validSearchStudent = async (req, res, next) => {
     if (!classSchool) {
       return res.status(404).send({ message: "Class doesn't exist!" });
     }
-    let student = await findStudentByQuery({ schoolClass: classId });
+    let student = await findOneStudentByQuery({ schoolClass: classId });
     if (student.length === 0) {
       student = "There aren't any students;";
     }
