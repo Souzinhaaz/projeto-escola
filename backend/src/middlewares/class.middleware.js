@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import {
   findClassByIdService
 } from "../services/class.service.js";
+import { findStudentByQuery } from "../services/student.service.js";
 import { searchReportCardFiltered } from "../services/reportCard.service.js";
 
 export const validClass = async (req, res, next) => {
@@ -41,14 +42,23 @@ export const validSearchStudent = async (req, res, next) => {
       return res.status(404).send({ message: "Class doesn't exist!" });
     }
 
-    const filter = { student }
-    const reportCard = await searchReportCardFiltered();
-    
-    console.log(reportCard)
-    // req.classSchool = classSchool;
-    // req.student = student;
-    // req.reportCard = reportCard;
-    // next();
+    let studentsInClass = await findStudentByQuery({ schoolClass: classSchool._id });
+
+    if (!studentsInClass.length) {
+      studentsInClass = "There aren't any students!";
+    }
+
+    const studentIds = studentsInClass.map(student => student._id);
+
+    let reportCards = await searchReportCardFiltered({ student: { $in: studentIds } });
+
+    if (!reportCards.length) {
+      reportCards = "There aren't any report cards!";
+    }
+
+    req.classSchool = classSchool;
+    req.reportCards = reportCards;
+    next();
   } catch (err) {
     res.status(500).send({ message: err.message });
   }

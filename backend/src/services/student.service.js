@@ -6,6 +6,8 @@ export const findStudentsService = () => Student.find().populate("schoolClass");
 
 export const findStudentByQuery = (filter) => Student.find(filter);
 
+export const findStudentInClass = (classId) => Student.find({schoolClass: classId}).select("_id");
+
 export const findOneStudentByQuery = (filter) => Student.findOne(filter);
 
 export const findStudentByIdService = (id) =>

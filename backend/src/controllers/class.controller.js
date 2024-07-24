@@ -91,34 +91,20 @@ export const searchClass = async (req, res) => {
 export const searchStudentsAndCards = async (req, res) => {
   try {
     const classSchool = req.classSchool;
-    const student = req.student;
-    const reportCard = req.reportCard;
+    const reportCards = req.reportCards;
 
-    if (!reportCard.grades) {
-      return res.status(200).send({
-        class: classSchool,
-        student: student,
-        reportCard: reportCard
-      })
-    }
+    const studentCards = reportCards.map(reportCard => {
+      const average = reportCard.grades.reduce((acc, grade) => acc + grade, 0) / reportCard.grades.length;
+      return {
+        ...reportCard.toObject(),
+        average: average.toFixed(2) 
+      };
+    });
 
-    let sum = 0;
-    for (let i = 0; i < reportCard.grades.length; i++) {
-      sum += reportCard.grades[i];
-    }
-    const average = sum / reportCard.grades.length;
 
     res.status(200).send({
       class: classSchool,
-      student: student,
-      reportCard: {
-        _id: reportCard._id,
-        student: student.name,
-        grades: reportCard.grades,
-        faults: reportCard.faults,
-        average: average,
-        approved: reportCard.approved
-      },
+      studentCards: studentCards
     });
   } catch (err) {
     res.status(500).send({ message: err.message });
