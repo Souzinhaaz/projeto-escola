@@ -94,8 +94,15 @@ export const searchStudentsAndCards = async (req, res) => {
     const student = req.student;
     const reportCard = req.reportCard;
 
+    if (!reportCard.grades) {
+      return res.status(200).send({
+        class: classSchool,
+        student: student,
+        reportCard: reportCard
+      })
+    }
+
     let sum = 0;
-    console.log(reportCard)
     for (let i = 0; i < reportCard.grades.length; i++) {
       sum += reportCard.grades[i];
     }

@@ -9,6 +9,8 @@ export const findCardsService = () => ReportCard.find().populate("student");
 
 export const searchByStudentService = (studentId) => ReportCard.find({student: studentId});
 
+export const searchReportCardFiltered = (filter) => ReportCard.find(filter).populate("student");
+
 export const findByIdCardService = (id) =>
   ReportCard.findById(id).populate("student");
 
